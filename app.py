@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, send_file, session
 from func import PrintCNF,PrintDNF,getResult,getVariables
+import os
+
 
 app = Flask(__name__)
+app.config['SECRET_KEY']=os.urandom(20)
+
 
 ALLOWED_OPTIONS = ["truthtable", "getDNF", "getCNF", "deduce"]
 
@@ -35,9 +39,10 @@ def calc():
                 truth_table = result.getTruthTable()
                 return truth_table
             elif options == "getDNF":
-                return PrintDNF(variables,digit_table)
+                flash(PrintDNF(variables,digit_table))
             elif options == "getCNF":
-                return PrintCNF(variables,digit_table)
+                flash(PrintCNF(variables,digit_table))
+            return render_template('send.html')
         except Exception as e:
             return str(e)
 
@@ -54,12 +59,12 @@ def judge():
     else:
         try:
             result_1=getResult(getVariables(expression1),expression1).getResult()
-            result_2 = getResult(getVariables(expression1), expression1).getResult()
+            result_2 = getResult(getVariables(expression2), expression2).getResult()
             if result_1 == result_2:
-                return "Judge Done. Expressions are equal."
+                flash("Judge Done. Expressions are equal.")
             else:
-                return "Judge Done. Expressions are not equal"
-
+                flash("Judge Done. Expressions are not equal")
+            return render_template('judge.html')
         except Exception as e:
             return str(e)
 

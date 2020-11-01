@@ -1,6 +1,5 @@
 import itertools
 from prettytable import PrettyTable
-import re
 from util import *
 
 class Truths(object):
