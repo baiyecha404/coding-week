@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="hero-body">
+	<div class="container has-text-centered">
+		<div class="column is-4 is-offset-4">
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			{% for message in messages %}
+			<div class="notification is-warning">
+				{{message}}
+			</div>
+			{% endfor %}
+			{% endif %}
+			{% endwith %}
+			<h3 class="title has-text-black">Calc it now</h3>
+			<hr class="login-hr">
+			<div class="box">
+			<form method="post">
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="text" name="expression" placeholder="enter expression to calc" autofocus="">
+                        </div>
+                    </div>
+                    Truth   <input type="radio" name="options" value="truthtable" >
+                    DNF     <input type="radio" name="options" value="getDNF" >
+                    CNF     <input type="radio" name="options" value="getCNF" >
+<!--                Judge   <input type="radio" name="options"  value="judge">
+                    Deduce  <input type="radio" name="options"  value="deduce">-->
+                    <br><br>
+                    <button class="button is-block is-info is-medium is-fullwidth">Send</button>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
