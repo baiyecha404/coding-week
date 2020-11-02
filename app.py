@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, flash, redirect, send_file, session
-from func import PrintCNF,PrintDNF,getResult,getVariables
+from flask import Flask, render_template, request, flash
+from func import PrintCNF,PrintDNF,getResult,getVariables,deduce
 import os
 
 
@@ -8,6 +8,7 @@ app.config['SECRET_KEY']=os.urandom(20)
 
 
 ALLOWED_OPTIONS = ["truthtable", "getDNF", "getCNF", "deduce"]
+GENDER= ['Male','Female']
 
 @app.route("/")
 def index():
@@ -27,11 +28,10 @@ def calc():
         return "Plz send your option."
     else:
         if options not in ALLOWED_OPTIONS:
-            return "Options not supported."
+            return "Option not supported."
         try:
             variables = getVariables(expression)
-            result=getResult(variables,expression)
-
+            result = getResult(variables,expression)
             # unreadable table eg:[[True,True],[],[]...]
             digit_table = result.getResult()
             if options == "truthtable":
@@ -65,6 +65,31 @@ def judge():
             else:
                 flash("Judge Done. Expressions are not equal")
             return render_template('judge.html')
+        except Exception as e:
+            return str(e)
+
+@app.route("/deduce", methods=["GET"])
+def send_deduce():
+    return render_template('deduce.html')
+
+@app.route("/deduce", methods=["POST"])
+def deduce_result():
+    expression = request.form["expression"]
+    if expression == "":
+        return "Just copy and paste..."
+    else:
+        try:
+            variables = getVariables(expression)
+            result = getResult(variables, expression).getResult()
+            answer = deduce(variables,result)
+            flash("Result: " + str(answer))
+            first_gender = (GENDER[0] if answer['A'] else GENDER[1])
+            second_gender = [gender for gender in GENDER if gender != first_gender][0]
+            child_gender = (GENDER[0] if answer['B'] else GENDER[1])
+            flash('The first one is {0}, the second one is {1}.The child is {2}'.format(
+                first_gender, second_gender, child_gender
+            ))
+            return render_template('deduce.html')
         except Exception as e:
             return str(e)
 

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="hero-body">
+	<div class="container has-text-centered">
+		<div class="column is-10 is-offset-1">
+<div class="notification is-warning">提出假设: A ： 第一个是男的
+B ： 第一个说的话是真的
+C ： 第二个说的第一句是真的
+D ： 第二个说的第二句是真的</div>
+            <div class="notification is-warning">进行假言推理： 1. A ∧ ￢B  (第一个说的是男的且他说谎,与题设相矛盾)</div>
+ <div class="notification is-warning">2. A ∧ B   (第一个说话的是父亲,父亲没说谎。此时母亲两句话都真或都假，会与题设相矛盾)</div>
+ <div class="notification is-warning">3. ￢A ∧ (￢C ∨ ￢D) (第二个是父亲，父亲说的两句话有谎话,与题设相矛盾)</div>
+ <div class="notification is-warning">4. ￢A ∧ B   (第二个是父亲，此时第一个为母亲且她说的是真的。此时父亲的话全假，与题设矛盾)</div>
+            <div class="notification is-warning">计算下式: (A ∧ ~B ) ∨ (A ∧ B) ∨ (~A ∧ (~C ∨ ~D)) ∨ (~A ∧ B)</div>
+            {% with messages = get_flashed_messages() %}
+			{% if messages %}
+			{% for message in messages %}
+			<div class="notification is-warning">
+				{{message}}
+			</div>
+			{% endfor %}
+			{% endif %}
+			{% endwith %}
+			<h3 class="title has-text-black">Calc it now</h3>
+			<hr class="login-hr">
+			<div class="box">
+			<form method="post">
+                    <div class="field">
+                        <div class="control">
+                            <input class="input" type="text" name="expression" placeholder="Enter the below expression to deduce" autofocus="">
+                        </div>
+                        <br>
+                    </div>
+                    <button class="button is-block is-info is-medium is-fullwidth">Send</button>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

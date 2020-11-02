@@ -11,7 +11,7 @@ class Truths(object):
         self.ints = ints
         self.results=[]
         # generate the sets of booleans for the bases
-        self.base_conditions = list(itertools.product([False, True],repeat=len(base)))
+        self.base_conditions = list(itertools.product([False, True], repeat=len(base)))
 
         # regex to match whole words defined in self.bases
         # used to add object context to variables in self.phrases
@@ -20,8 +20,8 @@ class Truths(object):
 
     def calculate(self, *args):
         # convert tuple args  to dict, then evaluate it.
-        evaluate_phrases=(evaluate(parse(self.phrases,),dict(zip(self.base,list(args)))))
-        row=list(args) + [evaluate_phrases]
+        evaluate_phrases = (evaluate(parse(self.phrases,), dict(zip(self.base, list(args)))))
+        row = list(args) + [evaluate_phrases]
         self.results.append(row)
         if self.ints:
             return [int(item) for item in row]

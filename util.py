@@ -1,7 +1,7 @@
 import re
 from collections import namedtuple
 import operator
-from string import ascii_uppercase,ascii_lowercase
+from string import ascii_uppercase
 
 Constant = namedtuple('Constant', 'value')
 Variable = namedtuple('Variable', 'name')
@@ -51,8 +51,7 @@ def parse(s):
 
     def error(expected):
         # Current token failed to match, so raise syntax error.
-        raise SyntaxError("Expected {} but found {!r}"
-                          .format(expected, token))
+        raise SyntaxError("Expected {} but found {!r}".format(expected, token))
 
     def match(valid_tokens):
         # If the current token is found in valid_tokens, consume it
