@@ -9,7 +9,8 @@ class Truths(object):
         self.base = base
         self.phrases = phrases or []
         self.ints = ints
-        self.results=[]
+        self.results = []
+        self.evaluate_results = []
         # generate the sets of booleans for the bases
         self.base_conditions = list(itertools.product([False, True], repeat=len(base)))
 
@@ -19,9 +20,10 @@ class Truths(object):
 
 
     def calculate(self, *args):
-        # convert tuple args  to dict, then evaluate it.
+        # convert tuple args to dict, then evaluate it.
         evaluate_phrases = (evaluate(parse(self.phrases,), dict(zip(self.base, list(args)))))
         row = list(args) + [evaluate_phrases]
+        self.evaluate_results.append(evaluate_phrases)
         self.results.append(row)
         if self.ints:
             return [int(item) for item in row]
@@ -30,14 +32,23 @@ class Truths(object):
 
     def getResult(self):
         self.getTruthTable()
+        # judge the result to see if the expression is logically true/false
+        if str(set(self.getEvaluateResult())) == '{True}':
+            return "logically True"
+        elif str(set(self.getEvaluateResult())) == '{False}':
+            return "logically False"
         return self.results
+
+    def getEvaluateResult(self):
+        self.getTruthTable()
+        return self.evaluate_results
 
     def getTruthTable(self):
         t = PrettyTable(self.base + [self.phrases])
         t.format=True
         for conditions_set in self.base_conditions:
             t.add_row(self.calculate(*conditions_set))
-        """only for self debugging"""
-        """return str(t)"""
+        # only for self debugging
+        # return str(t)
         return t.get_html_string()
 

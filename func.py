@@ -3,12 +3,15 @@ from TruthTable import Truths
 
 
 def getVariables(expression):
-    """ regex the variables (only alphabets supported)"""
-    sp = re.compile('[a-zA-Z]')
+    """
+    regex the variables (only alphabets supported)
+    also have to set and sort them
+    """
+    sp = re.compile('[a-zA-Z0-9]')
     variables = sp.findall(expression)
     return sorted(list(set(variables)))
 
-def getResult(variables,expression):
+def getTruths(variables,expression):
     """ return Truths (with lists and tables)"""
     result = Truths(variables, expression)
     return result
@@ -43,8 +46,10 @@ def PrintDNF(variables,table):
     return 'DNF: ' + ' ∨ '.join(dnf.join('()') for dnf in dnfs)
 
 def deduce(variables,results):
+    """ pick out the False column and return dict with variables as key"""
     for result in results:
         if not result[-1]:
             return dict(zip(sorted(variables),result))
+    return 'Failed'
 
 

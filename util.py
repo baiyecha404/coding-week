@@ -9,8 +9,7 @@ UnaryOp = namedtuple('UnaryOp', 'op operand')
 BinaryOp = namedtuple('BinaryOp', 'left op right')
 
 # Regular expression matching optional whitespace followed by a token
-# (if group 1 matches) or an error (if group 2 matches).
-TOKEN_RE = re.compile(r'\s*(?:([A-Za-z01()~∧∨→↔])|(\S))')
+TOKEN_RE = re.compile(r'\s*(?:([A-Za-z01()￢∧∨→↔])|(\S))')
 
 # Special token indicating the end of the input string.
 TOKEN_END = 'byc_404'
@@ -22,7 +21,7 @@ VARIABLES = set(ascii_uppercase)
 
 # Map from unary operator to function implementing it.
 UNARY_OPERATORS = {
-    '~': operator.not_,
+    '￢': operator.not_,
 }
 
 # Map from binary operator to function implementing it.
@@ -82,7 +81,7 @@ def parse(s):
     def unary_expr():
         # Parse a <UnaryExpr> starting at the current token.
         t = token
-        if match('~'):
+        if match('￢'):
             operand = unary_expr()
             return UnaryOp(op=UNARY_OPERATORS[t], operand=operand)
         else:
@@ -118,7 +117,8 @@ def parse(s):
     return tree
 
 def evaluate(tree, env):
-    """Evaluate the expression in the parse tree in the context of an
+    """
+    Evaluate the expression in the parse tree in the context of an
     environment mapping variable names to their values.
     """
     if isinstance(tree, Constant):

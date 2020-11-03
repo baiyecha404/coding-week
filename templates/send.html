@@ -12,6 +12,9 @@
 			{% endfor %}
 			{% endif %}
 			{% endwith %}
+            {% if table %}
+                    {{ table }}
+            {% endif %}
 			<h3 class="title has-text-black">Calc it now</h3>
 			<hr class="login-hr">
 			<div class="box">
@@ -21,11 +24,9 @@
                             <input class="input" type="text" name="expression" placeholder="enter expression to calc" autofocus="">
                         </div>
                     </div>
-                    Truth   <input type="radio" name="options" value="truthtable" >
+                    Truth   <input type="radio" name="options" value="truthTable" >
                     DNF     <input type="radio" name="options" value="getDNF" >
                     CNF     <input type="radio" name="options" value="getCNF" >
-<!--                Judge   <input type="radio" name="options"  value="judge">
-                    Deduce  <input type="radio" name="options"  value="deduce">-->
                     <br><br>
                     <button class="button is-block is-info is-medium is-fullwidth">Send</button>
 			</form>
