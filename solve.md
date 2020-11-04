@@ -4,6 +4,25 @@
 
 ## function
 
+$￢(A ∧ B) ↔ (￢A ∨ ￢B)$
+```python
+BinaryOp(
+    left=UnaryOp(
+        op=not,
+        operand=BinaryOp(
+            left=Variable(name='A'),
+            op=and,
+            right=Variable(name='B'))),
+    op=eq,
+    right=BinaryOp(
+        left=UnaryOp(
+            op=not,
+            operand=Variable(name='A')),
+        op=or,
+        right=UnaryOp(
+            op=not,
+```
+
 1. 真值表
 
 基本功能：
@@ -14,7 +33,6 @@
 - $(A ∧ ￢B ) ∨ (A ∧ B) ∨ (￢A ∧ (￢C ∨ ￢D)) ∨ (￢A ∧ B)$
 
 2. 主析取/主合取
-
    同上.可直接根据真值表生成。    
 
 3. 判断
@@ -61,3 +79,5 @@ input:
 第一个是女的，第二个是男的。
 第一个说的是假的。第二个说的两句话都真
 从而可知孩子是女孩
+
+

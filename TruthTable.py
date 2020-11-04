@@ -2,6 +2,7 @@ import itertools
 from prettytable import PrettyTable
 from util import *
 
+
 class Truths(object):
     def __init__(self, base=None, phrases=None, ints=True):
         if not base:
@@ -16,12 +17,10 @@ class Truths(object):
 
         # regex to match whole words defined in self.bases
         # used to add object context to variables in self.phrases
-        self.p = re.compile(r'(?<!\w)(' + '|'.join(self.base) + ')(?!\w)')
-
 
     def calculate(self, *args):
         # convert tuple args to dict, then evaluate it.
-        evaluate_phrases = (evaluate(parse(self.phrases,), dict(zip(self.base, list(args)))))
+        evaluate_phrases = (evaluate(parse(self.phrases, ), dict(zip(self.base, list(args)))))
         row = list(args) + [evaluate_phrases]
         self.evaluate_results.append(evaluate_phrases)
         self.results.append(row)
@@ -33,10 +32,13 @@ class Truths(object):
     def getResult(self):
         self.getTruthTable()
         # judge the result to see if the expression is logically true/false
-        if str(set(self.getEvaluateResult())) == '{True}':
-            return "logically True"
-        elif str(set(self.getEvaluateResult())) == '{False}':
-            return "logically False"
+        return self.results
+
+    def getComparableResult(self):
+        self.getTruthTable()
+        # judge the result to see if the expression is logically true/false
+        if len(list(set(self.getEvaluateResult()))) == 1:
+            return list(set(self.getEvaluateResult()))[0]
         return self.results
 
     def getEvaluateResult(self):
@@ -45,10 +47,11 @@ class Truths(object):
 
     def getTruthTable(self):
         t = PrettyTable(self.base + [self.phrases])
-        t.format=True
+        t.format = True
         for conditions_set in self.base_conditions:
             t.add_row(self.calculate(*conditions_set))
         # only for self debugging
         # return str(t)
         return t.get_html_string()
+
 

@@ -14,13 +14,10 @@ def index():
     return render_template('index.html')
 
 
-@app.route("/calc", methods=["GET"])
-def send_calc():
-    return render_template('send.html')
-
-
-@app.route("/calc", methods=["POST"])
+@app.route("/calc", methods=["GET", "POST"])
 def calc():
+    if request.method == "GET":
+        return render_template('send.html')
     expression = request.form["expression"]
     options = request.form["options"]
     if expression == "":
@@ -33,36 +30,36 @@ def calc():
         try:
             variables = getVariables(expression)
             result = getTruths(variables, expression)
-            # unreadable table eg:[[True,True],[],[]...]
+            # Unreadable table eg:[[True,True],[],[]...]
             digit_table = result.getResult()
             if options == "truthTable":
-                # readable table
+                # Return readable table in html
                 truth_table = result.getTruthTable()
                 return truth_table
             elif options == "getDNF":
+                # Print DNF in flash
                 flash(PrintDNF(variables, digit_table))
             elif options == "getCNF":
+                # Print CNF in flash
                 flash(PrintCNF(variables, digit_table))
             return render_template('send.html')
         except Exception as e:
             return str(e)
 
 
-@app.route("/judge", methods=["GET"])
-def send_judge():
-    return render_template('judge.html')
-
-
-@app.route("/judge", methods=["POST"])
+@app.route("/judge", methods=["GET", "POST"])
 def judge():
+    if request.method == "GET":
+        return render_template('judge.html')
     expression1 = request.form["expression1"]
     expression2 = request.form["expression2"]
     if expression1 == "" or expression2 == "":
         return "Plz send your expressions."
     else:
         try:
-            result_1 = getTruths(getVariables(expression1), expression1).getResult()
-            result_2 = getTruths(getVariables(expression2), expression2).getResult()
+            result_1 = getTruths(getVariables(expression1), expression1).getComparableResult()
+            result_2 = getTruths(getVariables(expression2), expression2).getComparableResult()
+            # Judge if two expressions are equal, then flash the result
             if result_1 == result_2:
                 flash("Judge Done. Expressions are equal.")
             else:
@@ -72,13 +69,10 @@ def judge():
             return str(e)
 
 
-@app.route("/deduce", methods=["GET"])
-def send_deduce():
-    return render_template('deduce.html')
-
-
-@app.route("/deduce", methods=["POST"])
+@app.route("/deduce", methods=["GET", "POST"])
 def deduce_result():
+    if request.method == "GET":
+        return render_template('deduce.html')
     expression = request.form["expression"]
     if expression == "":
         return "Just copy and paste..."
@@ -86,14 +80,19 @@ def deduce_result():
         try:
             variables = getVariables(expression)
             result = getTruths(variables, expression).getResult()
+            # Deduce the result
             answer = deduce(variables, result)
             if answer == "Failed":
                 flash('No result')
             else:
                 flash("Result: " + str(answer))
+                # Deduce the first one 's gender based on  hypothesis A
                 first_gender = GENDER[(0 if answer['A'] else 1)]
+                # Deduce the second one's gender based on the gender of First person
                 second_gender = [gender for gender in GENDER if gender != first_gender][0]
+                # Deduce the first one 's gender based on  hypothesis B
                 child_gender = GENDER[(0 if answer['B'] else 1)]
+                # Flash the gender
                 flash('The first one is {0}, the second one is {1}.The child is {2}'.format(
                     first_gender, second_gender, child_gender
                 ))

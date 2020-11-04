@@ -43,10 +43,11 @@ def tokenize(s):
             raise SyntaxError("Unexpected character {!r}".format(error))
     yield TOKEN_END
 
+
 def parse(s):
     """Parse s as a Boolean expression and return the parse tree."""
-    tokens = tokenize(s)        # Stream of tokens.
-    token = next(tokens)        # The current token.
+    tokens = tokenize(s)  # Stream of tokens.
+    token = next(tokens)  # The current token.
 
     def error(expected):
         # Current token failed to match, so raise syntax error.
@@ -101,20 +102,22 @@ def parse(s):
             return left
 
     def implication():
-        # Parse an <Implication> starting at the current token.
+        # Parse <Implication> starting at the current token.
         return binary_expr(unary_expr, '→↔', implication)
 
     def conjunction():
-        # Parse a <Conjunction> starting at the current token.
+        # Parse <Conjunction> starting at the current token.
         return binary_expr(implication, '∧', conjunction)
 
     def disjunction():
-        # Parse a <Disjunction> starting at the current token.
+        # Parse <Disjunction> starting at the current token.
         return binary_expr(conjunction, '∨', disjunction)
+
     tree = disjunction()
     if token != TOKEN_END:
         error("end of input")
     return tree
+
 
 def evaluate(tree, env):
     """
