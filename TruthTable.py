@@ -20,7 +20,7 @@ class Truths(object):
 
     def calculate(self, *args):
         # convert tuple args to dict, then evaluate it.
-        evaluate_phrases = (evaluate(parse(self.phrases, ), dict(zip(self.base, list(args)))))
+        evaluate_phrases = (evaluate(parse(self.phrases,), dict(zip(self.base, list(args)))))
         row = list(args) + [evaluate_phrases]
         self.evaluate_results.append(evaluate_phrases)
         self.results.append(row)
@@ -35,10 +35,11 @@ class Truths(object):
         return self.results
 
     def getComparableResult(self):
-        self.getTruthTable()
+        for conditions_set in self.base_conditions:
+            self.calculate(*conditions_set)
         # judge the result to see if the expression is logically true/false
-        if len(list(set(self.getEvaluateResult()))) == 1:
-            return list(set(self.getEvaluateResult()))[0]
+        if len(list(set(self.evaluate_results))) == 1:
+            return list(set(self.evaluate_results))[0]
         return self.results
 
     def getEvaluateResult(self):

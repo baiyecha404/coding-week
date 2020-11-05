@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash
-from func import PrintCNF, PrintDNF, getTruths, getVariables, deduce
+from func import *
 import os
 
 app = Flask(__name__)
@@ -18,8 +18,9 @@ def index():
 def calc():
     if request.method == "GET":
         return render_template('send.html')
-    expression = request.form["expression"]
+    expression = sanatizeInput(request.form["expression"])
     options = request.form["options"]
+    # not allowed to enter blank expression or option
     if expression == "":
         return "Plz send your expression."
     elif options == "":
@@ -27,10 +28,14 @@ def calc():
     else:
         if options not in ALLOWED_OPTIONS:
             return "Option not supported."
+        if expression == "1":
+            return "Logically True"
+        elif expression == "0":
+            return "Logically False"
         try:
             variables = getVariables(expression)
             result = getTruths(variables, expression)
-            # Unreadable table eg:[[True,True],[],[]...]
+            # Unreadable table eg:[[True,True],[],[]...]·
             digit_table = result.getResult()
             if options == "truthTable":
                 # Return readable table in html
@@ -44,15 +49,15 @@ def calc():
                 flash(PrintCNF(variables, digit_table))
             return render_template('send.html')
         except Exception as e:
-            return str(e)
+            return render_template('send.html',error=str(e))
 
 
 @app.route("/judge", methods=["GET", "POST"])
 def judge():
     if request.method == "GET":
         return render_template('judge.html')
-    expression1 = request.form["expression1"]
-    expression2 = request.form["expression2"]
+    expression1 = santizeInput(request.form["expression1"])
+    expression2 = santizeInput(request.form["expression2"])
     if expression1 == "" or expression2 == "":
         return "Plz send your expressions."
     else:
@@ -66,14 +71,14 @@ def judge():
                 flash("Judge Done. Expressions are not equal")
             return render_template('judge.html')
         except Exception as e:
-            return str(e)
+            return render_template('judge.html',error=str(e))
 
 
 @app.route("/deduce", methods=["GET", "POST"])
 def deduce_result():
     if request.method == "GET":
         return render_template('deduce.html')
-    expression = request.form["expression"]
+    expression = santizeInput(request.form["expression"])
     if expression == "":
         return "Just copy and paste..."
     else:
@@ -88,7 +93,7 @@ def deduce_result():
                 flash("Result: " + str(answer))
                 # Deduce the first one 's gender based on  hypothesis A
                 first_gender = GENDER[(0 if answer['A'] else 1)]
-                # Deduce the second one's gender based on the gender of First person
+                # Deduce the second one's gender based on the gender of first person
                 second_gender = [gender for gender in GENDER if gender != first_gender][0]
                 # Deduce the first one 's gender based on  hypothesis B
                 child_gender = GENDER[(0 if answer['B'] else 1)]
@@ -98,8 +103,7 @@ def deduce_result():
                 ))
             return render_template('deduce.html')
         except Exception as e:
-            return str(e)
-
+            return render_template('deduce.html',error=str(e))
 
 if __name__ == "__main__":
     app.run('0.0.0.0', port=8000, threaded=True)

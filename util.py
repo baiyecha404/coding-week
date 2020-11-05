@@ -9,7 +9,7 @@ UnaryOp = namedtuple('UnaryOp', 'op operand')
 BinaryOp = namedtuple('BinaryOp', 'left op right')
 
 # Regular expression matching optional whitespace followed by a token
-TOKEN_RE = re.compile(r'\s*(?:([A-Za-z01()￢∧∨→↔])|(\S))')
+TOKEN_RE = re.compile(r'\s*(?:([A-Za-z01()~∧∨→↔])|(\S))')
 
 # Special token indicating the end of the input string.
 TOKEN_END = 'byc_404'
@@ -21,7 +21,7 @@ VARIABLES = set(ascii_uppercase)
 
 # Map from unary operator to function implementing it.
 UNARY_OPERATORS = {
-    '￢': operator.not_,
+    '~': operator.not_,
 }
 
 # Map from binary operator to function implementing it.
@@ -82,7 +82,7 @@ def parse(s):
     def unary_expr():
         # Parse a <UnaryExpr> starting at the current token.
         t = token
-        if match('￢'):
+        if match('~'):
             operand = unary_expr()
             return UnaryOp(op=UNARY_OPERATORS[t], operand=operand)
         else:

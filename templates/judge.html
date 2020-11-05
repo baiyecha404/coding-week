@@ -1,5 +1,31 @@
 {% extends "layout.html" %}
 {% block body %}
+    <div class="hero-head">
+		<nav class="navbar">
+			<div class="container">
+				<div class="navbar-brand">
+					<a href="/" class="navbar-item">
+						Logic calculator
+					</a>
+				</div>
+				<div class="navbar-menu">
+					<div class="navbar-end">
+						<a href="/judge" class="navbar-item">
+							Judge
+						</a>
+                        <a href="/deduce" class="navbar-item">
+							Deduce
+						</a>
+						<span class="navbar-item">
+							<a href="/calc" class="button is-primary is-inverted">
+								<span>calc</span>
+							</a>
+						</span>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
 <div class="hero-body">
 	<div class="container has-text-centered">
 		<div class="column is-10 is-offset-1">
@@ -12,6 +38,11 @@
 			{% endfor %}
 			{% endif %}
 			{% endwith %}
+            {% if error %}
+                <div class="notification is-danger">
+                    {{ error }}
+                </div>
+            {% endif %}
 			<h3 class="title has-text-black">Calc it now</h3>
 			<hr class="login-hr">
 			<div class="box">
@@ -31,4 +62,14 @@
 		</div>
 	</div>
 </div>
+            <script>
+    function addChars(value) {
+        var oBtn = document.getElementById('expression');
+        oBtn.value += value;
+    }
+    function delChars() {
+        var oBtn = document.getElementById('expression');
+        oBtn.value = oBtn.value.substr(0,  oBtn.value.length - 1);
+    }
+    </script>
 {% endblock %}

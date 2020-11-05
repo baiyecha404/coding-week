@@ -1,6 +1,14 @@
 import re
 from TruthTable import Truths
 
+OPERATORS = {'/\\': "∧", "\/": "∨", "->": "→", "equal": "↔", "not": "~"}
+
+
+def sanatizeInput(expression):
+    for operator in OPERATORS:
+        expression = expression.replace(operator, OPERATORS[operator])
+    return expression
+
 
 def getVariables(expression):
     """
